@@ -1,0 +1,13 @@
+# Ignore build artifacts from ROS
+/build/
+/install/
+/log/
+
+# Ignore compiled python files
+*.pyc
+__pycache__/
+
+# Ignore editor-specific files
+*.swp
+*.swo
+*.swn
