@@ -21,11 +21,8 @@ import math
 from numpy import sign
 
 # Importing services
-from hw4_interfaces import SendData
+from hw4_interfaces.srv import SendData
 
-# Parameter imports
-from rclpy.parameter import parameter_value_to_python
-from rclpy.parameter_event_handler import ParameterEventHandler
 
 
 class OscopePublisher(Node):
@@ -35,21 +32,8 @@ class OscopePublisher(Node):
 		super().__init__('oscope')
 
 		# Declaring parameters
-		self.declare_parameter('frequency, 1.0')		
+		self.declare_parameter('frequency', 1.0)		
 		self.declare_parameter('clamp', 0.0)
-
-		# Setup event handler
-		self.handler = ParameterEventHandler(self)
-
-		self.frequency_callback = self.handler.add_parameter_callback(
-			parameter_name = 'frequency',
-			node_name = 'hw4',
-			callback = self.parameter_cb)
-
-		self.clamp_callback = self.handler.add_parameter_callback(
-			parameter_name = 'frequency',
-			node_name = 'hw4',
-			callback = self.parameter_cb)
 
 		# Create a publisher, and assign it to a member variable. 
 		self.pub = self.create_publisher(Float32, 'oscope', 10)
@@ -69,34 +53,26 @@ class OscopePublisher(Node):
         # Set up a variable to hold sin wave values
 		self.sinwave = 0.0
 
-		# Set up a variable for frequency
-		self.frequency = self.get_parameter('frequency').value
-
-		# Set up a variable to hold clamp range
-		self.clamp_range = self.get_parameter('clamp').value
-
-	# Parameter callback to handle parameter changes	
-	def parameter_cb(self, parameter):
-		value = parameter_value_to_python(parameter.value)
-		self.get_logger().info(f'Parameter changed: {parameter.name} = {value}')
-
-
 	# This callback will be called every time the timer fires.
 	def callback(self):
 		
 		# Only publish if turned on
 		if self.OscopePubBool:
 
+			# Pull current parameter values
+			frequency = self.get_parameter('frequency').get_parameter_value().double_value
+			clamp_range = self.get_parameter('clamp').get_parameter_value().double_value
+
 			# Make an Float32 message, and fill in the information.
 			msg = Float32()
 			
 			# Calculate new sinwave value
-			self.sinwave = math.sin(2 * math.pi * self.frequency * self.counter)
+			self.sinwave = math.sin(2 * math.pi * frequency * self.counter)
 
 			# Only clamp if value has been assigned
-			if self.clamp_range != 0.0:
-				if abs(self.sinwave) > self.clamp_range:
-					self.sinwave = self.clamp_range * sign(self.sinwave)
+			if clamp_range != 0.0:
+				if abs(self.sinwave) > clamp_range:
+					self.sinwave = clamp_range * sign(self.sinwave)
 				
 			# Increment Counter at the same rate as the timer
 			self.counter += 0.01
@@ -133,7 +109,7 @@ def main(args=None):
 	rclpy.init(args=args)
 
 	# Make a node class.
-	publisher = OscopePublisher(frequency=1)
+	publisher = OscopePublisher()
 
     # Handover to ROS2
 	rclpy.spin(publisher)

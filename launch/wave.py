@@ -36,5 +36,10 @@ def generate_launch_description():
             name= 'oscope_10Hz',
             parameters = {'frequency': 1.0,
                         'clamp': 0.7},
-        )
+        ),
+        launch_ros.actions.Node(
+            package='plotjuggler',
+            executable='plotjuggler',
+            name='plotjuggler'
+        ),
         ])
