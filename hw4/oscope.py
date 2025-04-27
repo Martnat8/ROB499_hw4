@@ -23,20 +23,42 @@ from numpy import sign
 # Importing services
 from hw4_interfaces import SendData
 
+# Parameter imports
+from rclpy.parameter import parameter_value_to_python
+from rclpy.parameter_event_handler import ParameterEventHandler
+
+
 class OscopePublisher(Node):
-	def __init__(self, frequency, clamp):
+	def __init__(self):
 
 		# Initialize the parent class of name oscope
 		super().__init__('oscope')
 
+		# Declaring parameters
+		self.declare_parameter('frequency, 1.0')		
+		self.declare_parameter('clamp', 0.0)
+
+		# Setup event handler
+		self.handler = ParameterEventHandler(self)
+
+		self.frequency_callback = self.handler.add_parameter_callback(
+			parameter_name = 'frequency',
+			node_name = 'hw4',
+			callback = self.parameter_cb)
+
+		self.clamp_callback = self.handler.add_parameter_callback(
+			parameter_name = 'frequency',
+			node_name = 'hw4',
+			callback = self.parameter_cb)
+
 		# Create a publisher, and assign it to a member variable. 
 		self.pub = self.create_publisher(Float32, 'oscope', 10)
 
-		# Create a timer at a rate of 100 Hz
-		self.timer = self.create_timer(0.01, self.callback)
-
 		# Create a service, with a type, name, and callback.
 		self.service = self.create_service(SendData, 'send_data', self.service_callback)
+
+		# Create a timer at a rate of 100 Hz
+		self.timer = self.create_timer(0.01, self.callback)
 
 		# Bool to control publishing, off by default
 		self.OscopePubBool = False
@@ -48,10 +70,16 @@ class OscopePublisher(Node):
 		self.sinwave = 0.0
 
 		# Set up a variable for frequency
-		self.frequency = frequency
+		self.frequency = self.get_parameter('frequency').value
 
 		# Set up a variable to hold clamp range
-		self.clamp_range = clamp
+		self.clamp_range = self.get_parameter('clamp').value
+
+	# Parameter callback to handle parameter changes	
+	def parameter_cb(self, parameter):
+		value = parameter_value_to_python(parameter.value)
+		self.get_logger().info(f'Parameter changed: {parameter.name} = {value}')
+
 
 	# This callback will be called every time the timer fires.
 	def callback(self):
@@ -65,9 +93,11 @@ class OscopePublisher(Node):
 			# Calculate new sinwave value
 			self.sinwave = math.sin(2 * math.pi * self.frequency * self.counter)
 
-			if abs(self.sinwave) > self.clamp:
-				self.sinwave = self.clamp * sign(self.signwave)
-			
+			# Only clamp if value has been assigned
+			if self.clamp_range != 0.0:
+				if abs(self.sinwave) > self.clamp_range:
+					self.sinwave = self.clamp_range * sign(self.sinwave)
+				
 			# Increment Counter at the same rate as the timer
 			self.counter += 0.01
 
