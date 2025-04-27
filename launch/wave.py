@@ -20,23 +20,26 @@ def generate_launch_description():
             package='hw4',
             executable='oscope',
             name= 'oscope_1Hz',
-            parameters = {'frequency': 1.0},
+            parameters = [{'frequency': 1.0, 'clamp': 0.0}],
+            remappings=[('oscope', 'oscope_1hz'),]            
         ),
 
         launch_ros.actions.Node(
             package='hw4',
             executable='oscope',
             name= 'oscope_5Hz',
-            parameters = {'frequency': 1.0},
+            parameters = [{'frequency': 5.0, 'clamp': 0.0}],
+            remappings=[('oscope', 'oscope_5hz'),] 
         ),
         
         launch_ros.actions.Node(
             package='hw4',
             executable='oscope',
             name= 'oscope_10Hz',
-            parameters = {'frequency': 1.0,
-                        'clamp': 0.7},
+            parameters = [{'frequency': 10.0, 'clamp': 0.7}],
+            remappings=[('oscope', 'oscope_10hz'),]
         ),
+
         launch_ros.actions.Node(
             package='plotjuggler',
             executable='plotjuggler',

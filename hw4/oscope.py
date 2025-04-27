@@ -45,7 +45,7 @@ class OscopePublisher(Node):
 		self.timer = self.create_timer(0.01, self.callback)
 
 		# Bool to control publishing, off by default
-		self.OscopePubBool = False
+		self.OscopePubBool = True
 
 		# Set up a counter that we can increment.
 		self.counter = 0
@@ -83,8 +83,6 @@ class OscopePublisher(Node):
 			# Publish the message
 			self.pub.publish(msg)
 
-			# Log that we published something. 
-			self.get_logger().info('Published {0}'.format(self.sinwave))
 
 	# This callback will be called every time that the service is called.  
 	def service_callback(self, request, response):
