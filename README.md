@@ -3,8 +3,8 @@
 This package contains one node that publishes sin waves. 
 It has parameters 'frequency' and 'clamp'.
 
-Frequency controls the frequency of the sin wave.
-Clamp, clamps the sin wave to a maxium amplitude.
+Frequency: controls the frequency of the sin wave.
+Clamp: clamps the sin wave to a maxium amplitude.
 
 This package is driven by the wave.py launch file, which spawns three instances of 
 the oscope node producing 1 Hz, 5 Hz, and 10 Hz sine waves. The 10 Hz wave is clamped 
@@ -24,7 +24,7 @@ source install/setup.bash
 ros2 launch hw4 wave.py
 
 Data is published by default to start or stop publishing use the following command 
-format:
+format, just change 1hz to 5hz or 10hz:
 
 ros2 service call /send_data_1hz hw4_interfaces/srv/SendData "{ send_data: false }"
 
