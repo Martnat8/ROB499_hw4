@@ -1,8 +1,9 @@
-# An example Python launch file for ROS.
+# The launch file for oscope.py currently launching three versions of the node
+# Each with a different frequency.
 #
-# doubler_launch.py
+# wave.py
 #
-# Bill Smart
+# Nathan Martin
 
 
 # We need to import the launch system modules.  There's a generic launch
@@ -19,25 +20,25 @@ def generate_launch_description():
         launch_ros.actions.Node(
             package='hw4',
             executable='oscope',
-            name= 'oscope_1Hz',
+            name= 'oscope_1hz',
             parameters = [{'frequency': 1.0, 'clamp': 0.0}],
-            remappings=[('oscope', 'oscope_1hz'),]            
+            remappings=[('oscope', 'oscope_1hz'), ('send_data','send_data_1hz'),]            
         ),
 
         launch_ros.actions.Node(
             package='hw4',
             executable='oscope',
-            name= 'oscope_5Hz',
+            name= 'oscope_5hz',
             parameters = [{'frequency': 5.0, 'clamp': 0.0}],
-            remappings=[('oscope', 'oscope_5hz'),] 
+            remappings=[('oscope', 'oscope_5hz'), ('send_data','send_data_5hz'),] 
         ),
         
         launch_ros.actions.Node(
             package='hw4',
             executable='oscope',
-            name= 'oscope_10Hz',
+            name= 'oscope_10hz',
             parameters = [{'frequency': 10.0, 'clamp': 0.7}],
-            remappings=[('oscope', 'oscope_10hz'),]
+            remappings=[('oscope', 'oscope_10hz'), ('send_data','send_data_10hz'),]
         ),
 
         launch_ros.actions.Node(

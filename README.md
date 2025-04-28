@@ -1,29 +1,33 @@
-# ROB 499 Robot Software Frameworks HW3
+# ROB 499 Robot Software Frameworks HW4
 
-This package contains two nodes each with their own service that controls their
-utility.
+This package contains one node that publishes sin waves. 
+It has parameters 'frequency' and 'clamp'.
 
-data_sender - Sends a test packet of arbitrary information and it's send time.
+Frequency controls the frequency of the sin wave.
+Clamp, clamps the sin wave to a maxium amplitude.
 
-data_receiver - Subscribes to data_sender and calculates latency of the packet. 
-Reports raw and averaged latency.
+This package is driven by the wave.py launch file, which spawns three instances of 
+the oscope node producing 1 Hz, 5 Hz, and 10 Hz sine waves. The 10 Hz wave is clamped 
+to ±0.7, and each node is remapped to its own topic: 
+    (e.g. /oscope_1Hz, /oscope_5Hz, /oscope_10Hz).
+    
+This package also contains a service to start and stop publishing data.
 
-_____________________________________________________________________
+oscope.py 
 
-To start run these two commands in separate terminals:
+_____________________________________________________________________________________
 
-- `ros2 run hw3 data_receiver`
-- `ros2 run hw3 data_sender`
+To start, build packages, source and run the launch file
 
-In two new terminals use the following commands to start and stop data and logging. 
-The filename logging.csv can be anything you want and will either create a file or 
-append on to an existing one. The file name can also be a file path
+colcon build --packages-select hw4_interfaces hw4
+source install/setup.bash
+ros2 launch hw4 wave.py
 
-ros2 service call /send_data hw3/srv/SendData "{ send_data: true }"
-ros2 service call /send_data hw3/srv/SendData "{ send_data: false }"
+Data is published by default to start or stop publishing use the following command 
+format:
 
-ros2 service call /enable_logging hw3/srv/EnableLogging "{ enable_logging: true, file_name: 'logging.csv' }"
-ros2 service call /enable_logging hw3/srv/EnableLogging "{ enable_logging: false, file_name: 'logging.csv' }"
+ros2 service call /send_data_1hz hw4_interfaces/srv/SendData "{ send_data: false }"
+
 
 _____________________________________________________________________________________
 Maintainer - Nathan Martin - martnat8@oregonstate.edu
@@ -31,12 +35,6 @@ ________________________________________________________________________________
 License - BSD 3-Clause
 _____________________________________________________________________________________
 References:
-ROS2 Time - https://docs.ros.org/en/iron/p/rclpy/api/time.html
-ROS2 Builtin_interfaces - https://github.com/ros2/rcl_interfaces/blob/rolling/builtin_interfaces
-Python Append to file - https://www.geeksforgeeks.org/python-append-to-a-file/
-
-I spoke with classmate MJ Santos about enabling python scripts in the CMakeLists. Further 
-I "spoke" with ChatGPT to understand formatting and building the hybrid package since 
-this was created using cmake and not python as in the tutorial.
+Code largely iterative of class given example code, particulary rob599_basic params.py.
 
 
