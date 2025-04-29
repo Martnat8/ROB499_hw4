@@ -18,6 +18,7 @@ from rclpy.action import ActionClient
 
 # Pull in the action definition. 
 from hw4_interfaces.action import LaunchRocket
+from hw4_interfaces.srv	import CancelLaunch
 
 
 # Creating the client node
@@ -32,6 +33,12 @@ class LaunchClient(Node):
 
 		# Declare Parameter for count down goal, default 10
 		self.declare_parameter('count_down_goal', 10)	
+
+		# Create a service, with a type, name, and callback.
+		self.service = self.create_service(CancelLaunch, 'cancel', self.service_callback)
+
+		# Variable to hold cancel bool
+		self.cancelBool = False
 
 	# This function is a wrapper that will allow us to more conveniently invoke the action.
 	def send_goal(self, n):
@@ -56,6 +63,28 @@ class LaunchClient(Node):
 
 		# We're not going to do anything other than log the feedback.
 		self.get_logger().info(f'Got feedback: {feedback_msg.feedback.progress}')
+
+		# This will test the functionality of the cancelation request. CHANGE LOGIC
+		if self.with_cancel and self.cancelBool:
+			self.get_logger().info('Request received, launch canceled.')
+			future = self.goal_handle.cancel_goal_async()
+			future.add_done_callback(self.cancel_cb)
+
+	# This callback will be called every time that the service is called.  
+	def service_callback(self, request, response):
+
+		# Setting cancel book equal to request
+		self.cancelBool = request.cancel
+
+		# Fill in the data in the response type.
+		response.canceled = request.cancel
+
+		# Log a message.
+		self.get_logger().info(f'Launch cancel set to   {response.canceled}')
+
+		# The idiom is to return the response at the end of the callback.
+		return response
+	
 
 	def cancel_cb(self, future):
 
@@ -125,7 +154,7 @@ def with_cancel(args=None):
 
 	# Get parameterized goal
 	count = client.get_parameter('count_down_goal').value
-	
+
 	# Make the action call.
 	client.send_goal(count)
 
