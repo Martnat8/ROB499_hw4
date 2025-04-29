@@ -1,9 +1,14 @@
 # ROB 499 Robot Software Frameworks HW4
 
 This package contains three nodes for a two part assignment.
+
+oscope.py
+
+nasa.py
+nasa_client.py
 _____________________________________________________________________________________
 _____________________________________________________________________________________
-oscope.py 
+# oscope.py 
 _____________________________________________________________________________________
 _____________________________________________________________________________________
 
@@ -27,31 +32,38 @@ colcon build --packages-select hw4_interfaces hw4
 source install/setup.bash
 ros2 launch hw4 wave.py
 
-Data is published by default to start or stop publishing use the following command 
-format, just change 1hz to 5hz or 10hz:
+Data is published by default to start. If you want to start or stop publishing use 
+the following command format, just change 1hz to 5hz or 10hz:
 
 ros2 service call /send_data_1hz hw4_interfaces/srv/SendData "{ send_data: false }"
 _____________________________________________________________________________________
 _____________________________________________________________________________________
-nasa.py
+# nasa.py
 _____________________________________________________________________________________
 _____________________________________________________________________________________
 
 The second part has two nodes nasa.py, nasa_client.py and a launch file. These nodes 
-run an action client and server that countdown from 10 providing feedback along the 
-way. 
+run an action client and server that countdown from a number as determined my a 
+parameter in the launch.py file in the launch folder. The countdown can be canceled
+as described below.
 _____________________________________________________________________________________
 To start, build packages, source and run the launch file
 
 colcon build --packages-select hw4_interfaces hw4
 source install/setup.bash
 ros2 launch hw4 launch.py
+
+If you are interested in canceling the launch run the following command in a new 
+sourced terminal
+
+ros2 service call /cancel hw4_interfaces/srv/CancelLaunch "{ cancel: true }
 _____________________________________________________________________________________
 Maintainer - Nathan Martin - martnat8@oregonstate.edu
 _____________________________________________________________________________________
 License - BSD 3-Clause
 _____________________________________________________________________________________
 References:
-Code largely iterative of class given example code, particulary rob599_basic params.py.
+Code largely iterative of class given example code, action_client.py and 
+action_server.py.
 
 
