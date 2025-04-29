@@ -89,7 +89,7 @@ class LaunchClient(Node):
 		result = future.result().result
 
 		# Log the result to the info channel.
-		self.get_logger().info(f'Result: {list(result.countdown)}')
+		self.get_logger().info(f'Countdown ended at: {(result.countdown)}')
 
 
 
