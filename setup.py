@@ -38,8 +38,7 @@ setup(
             # A node the publishes a clamed sinwave
             'oscope = hw4.oscope:main',
             'nasa = hw4.nasa:main',
-            'nasa_client_no_cancel = hw4.nasa_client:without_cancel',
-            'nasa_client_with_cancel = hw4.nasa_client:with_cancel',
+            'nasa_client = hw4.nasa_client:main',
         ],
     },
 )

@@ -25,10 +25,10 @@ def generate_launch_description():
 
         launch_ros.actions.Node(
             package='hw4',
-            executable='nasa_client_no_cancel',
+            executable='nasa_client',
             name= 'nasa_client',
-            
+
             # Change this value to change launch goal
-            parameters = [{'count_down_goal': 5}],
+            parameters = [{'count_down_goal': 15}],
         ),
         ])

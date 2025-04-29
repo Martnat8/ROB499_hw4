@@ -23,7 +23,7 @@ from hw4_interfaces.srv	import CancelLaunch
 
 # Creating the client node
 class LaunchClient(Node):
-	def __init__(self, with_cancel=False):
+	def __init__(self):
 
 		# Initialize the superclass
 		super().__init__('launch_client')
@@ -41,11 +41,11 @@ class LaunchClient(Node):
 		self.cancelBool = False
 
 	# This function is a wrapper that will allow us to more conveniently invoke the action.
-	def send_goal(self, n):
+	def send_goal(self):
 
-		# Build an action goal, and fill in the data. 
+		# Build an action goal, and fill in the data with parametrized count
 		goal = LaunchRocket.Goal()
-		goal.number = n
+		goal.number = self.get_parameter('count_down_goal').value
 
 		# Wait until the server is ready to accept an action request.
 		self.client.wait_for_server()
@@ -65,7 +65,7 @@ class LaunchClient(Node):
 		self.get_logger().info(f'Got feedback: {feedback_msg.feedback.progress}')
 
 		# This will test the functionality of the cancelation request. CHANGE LOGIC
-		if self.with_cancel and self.cancelBool:
+		if self.cancelBool:
 			self.get_logger().info('Request received, launch canceled.')
 			future = self.goal_handle.cancel_goal_async()
 			future.add_done_callback(self.cancel_cb)
@@ -124,39 +124,15 @@ class LaunchClient(Node):
 		self.get_logger().info(f'Countdown ended at: {(result.countdown)}')
 
 
-
-def without_cancel(args=None):
-	# Initialize rclpy.
-	rclpy.init(args=args)
-
-	# Set up a node to do the work.
-	client = LaunchClient(with_cancel=False)
-
-	# Get parameterized goal
-	count = client.get_parameter('count_down_goal').value
-
-	# Make the action call.
-	client.send_goal(count)
-
-	# Give control over to ROS2.
-	rclpy.spin(client)
-
-	# Make sure everything has shut down correctly.
-	rclpy.shutdown()
-	
-
-def with_cancel(args=None):
+def main(args=None):
 	# Initialize rclpy.
 	rclpy.init(args=args)
 
 	# Set up a node to do the work, demonstrating action canceling.
-	client = LaunchClient(with_cancel=True)
-
-	# Get parameterized goal
-	count = client.get_parameter('count_down_goal').value
+	client = LaunchClient()
 
 	# Make the action call.
-	client.send_goal(count)
+	client.send_goal()
 
 	# Give control over to ROS2.
 	rclpy.spin(client)
@@ -168,4 +144,4 @@ def with_cancel(args=None):
 # This is the entry point for running the node directly from the command line.
 # Runs without cancels if called on the command line
 if __name__ == '__main__':
-	without_cancel()
+	main()

@@ -57,7 +57,7 @@ class LaunchActionServer(Node):
 			if goal.is_cancel_requested:
 				goal.canceled()
 				self.get_logger().info('Launch is canceled.')
-				return LaunchRocket.Result()
+				return result
 			
 			# Decrement countdown and publish feedback
 			result.countdown -= 1
