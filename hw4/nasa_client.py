@@ -23,6 +23,7 @@ from hw4_interfaces.action import LaunchRocket
 # Creating the client node
 class LaunchClient(Node):
 	def __init__(self, with_cancel=False):
+
 		# Initialize the superclass
 		super().__init__('launch_client')
 
@@ -31,6 +32,7 @@ class LaunchClient(Node):
 
 	# This function is a wrapper that will allow us to more conveniently invoke the action.
 	def send_goal(self, n):
+
 		# Build an action goal, and fill in the data. 
 		goal = LaunchRocket.Goal()
 		goal.number = n
@@ -87,16 +89,33 @@ class LaunchClient(Node):
 		result = future.result().result
 
 		# Log the result to the info channel.
-		self.get_logger().info(f'Result: {list(result.sequence)}')
+		self.get_logger().info(f'Result: {list(result.countdown)}')
 
 
-# This is the main entry point.
-def main(client, args=None):
+
+def without_cancel(args=None):
 	# Initialize rclpy.
 	rclpy.init(args=args)
 
 	# Set up a node to do the work.
-	client = LaunchClient()
+	client = LaunchClient(with_cancel=False)
+
+	# Make the action call.
+	client.send_goal(10)
+
+	# Give control over to ROS2.
+	rclpy.spin(client)
+
+	# Make sure everything has shut down correctly.
+	rclpy.shutdown()
+	
+
+def with_cancel(args=None):
+	# Initialize rclpy.
+	rclpy.init(args=args)
+
+	# Set up a node to do the work, demonstrating action canceling.
+	client = LaunchClient(with_cancel=True)
 
 	# Make the action call.
 	client.send_goal(10)
@@ -109,5 +128,6 @@ def main(client, args=None):
 
 
 # This is the entry point for running the node directly from the command line.
+# Runs without cancels if called on the command line
 if __name__ == '__main__':
-	main()
+	without_cancel()

@@ -37,10 +37,12 @@ class LaunchActionServer(Node):
 		self.server = ActionServer(self, LaunchRocket, 'launch_rocket', self.callback, 
 			callback_group=ReentrantCallbackGroup(), cancel_callback=self.cancel_callback)
 
-	# This is the callback the services the action request.
+	# This is the callback that services the action request.
 	def callback(self, goal):
 
+		# This holds what number we're going to countdown from
 		countdown = goal.request.number
+
 		# Grab the logger and send a message to it.
 		self.get_logger().info(f'Received countdown goal: {countdown}')
 
