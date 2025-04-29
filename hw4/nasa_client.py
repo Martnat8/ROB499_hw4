@@ -30,6 +30,9 @@ class LaunchClient(Node):
 		# Set up the simple action client.
 		self.client = ActionClient(self, LaunchRocket, 'launch_rocket')
 
+		# Declare Parameter for count down goal, default 10
+		self.declare_parameter('count_down_goal', 10)	
+
 	# This function is a wrapper that will allow us to more conveniently invoke the action.
 	def send_goal(self, n):
 
@@ -100,8 +103,11 @@ def without_cancel(args=None):
 	# Set up a node to do the work.
 	client = LaunchClient(with_cancel=False)
 
+	# Get parameterized goal
+	count = client.get_parameter('count_down_goal').value
+
 	# Make the action call.
-	client.send_goal(10)
+	client.send_goal(count)
 
 	# Give control over to ROS2.
 	rclpy.spin(client)
@@ -117,8 +123,11 @@ def with_cancel(args=None):
 	# Set up a node to do the work, demonstrating action canceling.
 	client = LaunchClient(with_cancel=True)
 
+	# Get parameterized goal
+	count = client.get_parameter('count_down_goal').value
+	
 	# Make the action call.
-	client.send_goal(10)
+	client.send_goal(count)
 
 	# Give control over to ROS2.
 	rclpy.spin(client)
