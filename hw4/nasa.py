@@ -19,17 +19,14 @@ from rclpy.executors import MultiThreadedExecutor
 # Pull in the action definition. 
 from hw4_interfaces.action import LaunchRocket
 
-# We're going to use sleep to slow down the action server.  This will let us see the
-# feedback coming into the client.
+# We're going to use sleep to slow down the countdown
 from time import sleep
 
 
-# The idiom in ROS2 is to use a function to do all of the setup and work.  This
-# function is referenced in the setup.py file as the entry point of the node when
-# we're running the node with ros2 run.  The function should have one argument, for
-# passing command line arguments, and it should default to None.
+# The idiom in ROS2 is to use a function to do all of the setup and work.
 class LaunchActionServer(Node):
 	def __init__(self):
+
 		# Initialize the superclass
 		super().__init__('launch_rocket')
 
@@ -69,8 +66,7 @@ class LaunchActionServer(Node):
 			# 1 second between countdowns
 			sleep(1)
 
-		# Let the action server know that we've succeeded in the action.  It it doesn't
-		# succeed, you can set other values here.
+		# Let the action server know that we've succeeded in the action. 
 		goal.succeed()
 		self.get_logger().info(f'Launch Successful!')
 
