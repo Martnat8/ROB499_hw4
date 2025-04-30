@@ -56,7 +56,7 @@ ros2 launch hw4 launch.py
 If you are interested in canceling the launch run the following command in a new 
 sourced terminal
 
-ros2 service call /cancel hw4_interfaces/srv/CancelLaunch "{ cancel: true }
+ros2 service call /cancel hw4_interfaces/srv/CancelLaunch "{ cancel: true }"
 _____________________________________________________________________________________
 Maintainer - Nathan Martin - martnat8@oregonstate.edu
 _____________________________________________________________________________________
